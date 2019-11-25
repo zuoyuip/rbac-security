@@ -4,12 +4,26 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.supergenius.model.UserRole">
-        <id column="USER_ROLE_ID" property="userRoleId" />
-        <result column="USER_ID" property="userId" />
-        <result column="ROLE_ID" property="roleId" />
-        <result column="USER_ROLE_CREAT_TIME_STAMP" property="userRoleCreatTimeStamp" />
-        <result column="USER_ROLE_UPDATE_TIME_STAMP" property="userRoleUpdateTimeStamp" />
-        <result column="USER_ROLE_IS_DELETE" property="userRoleIsDelete" />
+        <id column="USER_ROLE_ID" property="userRoleId"/>
+        <result column="USER_ID" property="userId"/>
+        <result column="ROLE_ID" property="roleId"/>
+        <result column="USER_ROLE_CREAT_TIME_STAMP" property="userRoleCreatTimeStamp"/>
+        <result column="USER_ROLE_UPDATE_TIME_STAMP" property="userRoleUpdateTimeStamp"/>
+        <result column="USER_ROLE_IS_DELETE" property="userRoleIsDelete"/>
     </resultMap>
+    <update id="deleteRolesById">
+        UPDATE security.security_user_role
+        SET USER_ROLE_IS_DELETE         = 1,
+            USER_ROLE_UPDATE_TIME_STAMP = NOW()
+        WHERE (ROLE_ID = #{roleId}
+            AND USER_ID = #{userId}
+            AND USER_ROLE_IS_DELETE = 0)
+    </update>
+    <select id="selectRoleByUserId" resultType="java.lang.Integer">
+        SELECT ROLE_ID
+        FROM security.security_user_role
+        WHERE USER_ROLE_IS_DELETE = 0
+          AND USER_ID = #{userId}
+    </select>
 
 </mapper>

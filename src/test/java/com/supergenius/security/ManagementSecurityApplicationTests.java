@@ -7,7 +7,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 @SpringBootTest
 @WebAppConfiguration
-class ManagementSecurityApplicationTests {
+abstract class ManagementSecurityApplicationTests {
 
     @Test
     void contextLoads() {

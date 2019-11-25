@@ -4,21 +4,21 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.supergenius.model.Authority">
-        <id column="AUTHORITY_ID" property="authorityId" />
-        <result column="AUTHORITY_NAME" property="authorityName" />
-        <result column="AUTHORITY_CONTENT" property="authorityContent" />
-        <result column="AUTHORITY_MENU" property="authorityMenu" />
-        <result column="AUTHORITY_MENU_URL" property="authorityMenuUrl" />
-        <result column="AUTHORITY_CREAT_TIME_STAMP" property="authorityCreatTimeStamp" />
-        <result column="AUTHORITY_UPDATE_TIME_STAMP" property="authorityUpdateTimeStamp" />
-        <result column="AUTHORITY_IS_DELETE" property="authorityIsDelete" />
+        <id column="AUTHORITY_ID" property="authorityId"/>
+        <result column="AUTHORITY_NAME" property="authorityName"/>
+        <result column="AUTHORITY_CONTENT" property="authorityContent"/>
+        <result column="AUTHORITY_MENU" property="authorityMenu"/>
+        <result column="AUTHORITY_MENU_URL" property="authorityMenuUrl"/>
+        <result column="AUTHORITY_CREAT_TIME_STAMP" property="authorityCreatTimeStamp"/>
+        <result column="AUTHORITY_UPDATE_TIME_STAMP" property="authorityUpdateTimeStamp"/>
+        <result column="AUTHORITY_IS_DELETE" property="authorityIsDelete"/>
     </resultMap>
     <select id="isExistsByAuthorityId" resultType="java.lang.Boolean">
-        SELECT IFNULL((SELECT
-                       TOP (1)
-                       1
+        SELECT IFNULL((SELECT 1
                        FROM security.security_authority
-                       WHERE AUTHORITY_IS_DELETE = 0 AND AUTHORITY_ID = #{authorityId}
+                       WHERE AUTHORITY_IS_DELETE = 0
+                         AND AUTHORITY_ID = #{authorityId}
+                       LIMIT 1
                           ), 0)
     </select>
 

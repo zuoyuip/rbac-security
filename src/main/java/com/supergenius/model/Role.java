@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -22,6 +23,7 @@ import lombok.experimental.Accessors;
  * @since 2019-11-22
  */
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("security_role")
@@ -56,4 +58,7 @@ public class Role extends Model<Role> {
         return this.roleId;
     }
 
+    public Role(String roleName) {
+        this.roleName = roleName;
+    }
 }

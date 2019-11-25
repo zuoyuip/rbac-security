@@ -4,12 +4,26 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.supergenius.model.RoleAuthority">
-        <id column="ROLE_AUTHORITY_ID" property="roleAuthorityId" />
-        <result column="ROLE_ID" property="roleId" />
-        <result column="AUTHORITY_ID" property="authorityId" />
-        <result column="ROLE_AUTHORITY_CREAT_TIME_STAMP" property="roleAuthorityCreatTimeStamp" />
-        <result column="ROLE_AUTHORITY_UPDATE_TIME_STAMP" property="roleAuthorityUpdateTimeStamp" />
-        <result column="ROLE_AUTHORITY_IS_DELETE" property="roleAuthorityIsDelete" />
+        <id column="ROLE_AUTHORITY_ID" property="roleAuthorityId"/>
+        <result column="ROLE_ID" property="roleId"/>
+        <result column="AUTHORITY_ID" property="authorityId"/>
+        <result column="ROLE_AUTHORITY_CREAT_TIME_STAMP" property="roleAuthorityCreatTimeStamp"/>
+        <result column="ROLE_AUTHORITY_UPDATE_TIME_STAMP" property="roleAuthorityUpdateTimeStamp"/>
+        <result column="ROLE_AUTHORITY_IS_DELETE" property="roleAuthorityIsDelete"/>
     </resultMap>
+    <update id="deleteAuthoritiesById">
+        UPDATE security.security_role_authority
+        SET ROLE_AUTHORITY_IS_DELETE         = 1,
+            ROLE_AUTHORITY_UPDATE_TIME_STAMP = NOW()
+        WHERE (AUTHORITY_ID = #{authorityId}
+            AND ROLE_ID = #{roleId}
+            AND ROLE_AUTHORITY_IS_DELETE = 0)
+    </update>
+    <select id="selectAuthoritiesByRoleId" resultType="java.lang.Integer">
+        SELECT AUTHORITY_ID
+        FROM security.security_role_authority
+        WHERE ROLE_AUTHORITY_IS_DELETE = 0
+          AND ROLE_ID = #{roleId}
+    </select>
 
 </mapper>

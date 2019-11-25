@@ -1,10 +1,14 @@
 package com.supergenius.service.impl;
 
-import com.supergenius.model.Authority;
-import com.supergenius.mapper.AuthorityMapper;
-import com.supergenius.service.IAuthorityService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.supergenius.mapper.AuthorityMapper;
+import com.supergenius.model.Authority;
+import com.supergenius.service.IAuthorityService;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -17,4 +21,16 @@ import org.springframework.stereotype.Service;
 @Service
 class AuthorityServiceImpl extends ServiceImpl<AuthorityMapper, Authority> implements IAuthorityService {
 
+    @Override
+    public boolean save(Authority authority) {
+        authority.setAuthorityCreatTimeStamp(new Date()).setAuthorityIsDelete(false);
+        return super.save(authority);
+    }
+
+    @Override
+    public boolean saveBatch(Collection<Authority> entityList) {
+        return super.saveBatch(entityList.stream().map(authority ->
+                authority.setAuthorityCreatTimeStamp(new Date()).setAuthorityIsDelete(false))
+                .collect(Collectors.toList()));
+    }
 }

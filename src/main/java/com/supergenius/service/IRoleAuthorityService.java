@@ -3,6 +3,8 @@ package com.supergenius.service;
 import com.supergenius.model.RoleAuthority;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.Set;
+
 /**
  * <p>
  * 角色权限中间表 服务类
@@ -13,4 +15,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IRoleAuthorityService extends IService<RoleAuthority> {
 
+    /**
+     * 根据roleId修改其权限
+     * @param roleId -
+     * @param authorityIds -
+     * @return boolean
+     */
+    boolean updateAuthorities(Integer roleId, Set<Integer> authorityIds);
 }

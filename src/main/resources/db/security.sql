@@ -59,7 +59,7 @@ create table security_user
 (
     USER_ID                         int auto_increment comment '安全用户ID',
     USER_SECURITY_NAME              varchar(32)                         not null comment '安全账号',
-    USER_PASS_WORD                  varchar(64)                         not null comment '用户密码',
+    USER_PASS_WORD                  varchar(128)                         not null comment '用户密码',
     USER_IS_ENABLED                 tinyint(1)                          not null comment '账号是否启用',
     USER_IS_ACCOUNT_NON_EXPIRED     tinyint(1)                          not null comment '账号是否未过期',
     USER_IS_CREDENTIALS_NON_EXPIRED tinyint(1)                          not null comment '凭证是否未过期',

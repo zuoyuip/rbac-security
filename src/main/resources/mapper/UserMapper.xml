@@ -20,12 +20,11 @@
         <result column="USER_EMAIL" property="userEmail"/>
     </resultMap>
     <select id="isExistsByUserSecurityName" resultType="java.lang.Boolean">
-        SELECT IFNULL((SELECT
-                       TOP (1)
-                       1
+        SELECT IFNULL((SELECT 1
                        FROM security.security_user
                        WHERE USER_IS_DELETE = 0
                          AND USER_SECURITY_NAME = #{userSecurityName}
+                       LIMIT 1
                           ), 0)
     </select>
 

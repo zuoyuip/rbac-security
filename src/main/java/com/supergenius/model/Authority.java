@@ -1,17 +1,20 @@
 package com.supergenius.model;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.apache.ibatis.annotations.ConstructorArgs;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -22,10 +25,11 @@ import lombok.experimental.Accessors;
  * @since 2019-11-22
  */
 @Data
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("security_authority")
-@ApiModel(value="Authority对象", description="权限表")
+@ApiModel(value = "Authority对象", description = "权限表")
 public class Authority extends Model<Authority> {
 
     private static final long serialVersionUID = 1L;
@@ -68,4 +72,11 @@ public class Authority extends Model<Authority> {
         return this.authorityId;
     }
 
+
+    public Authority(String authorityName, String authorityContent, String authorityMenu, String authorityMenuUrl) {
+        this.authorityName = authorityName;
+        this.authorityContent = authorityContent;
+        this.authorityMenu = authorityMenu;
+        this.authorityMenuUrl = authorityMenuUrl;
+    }
 }

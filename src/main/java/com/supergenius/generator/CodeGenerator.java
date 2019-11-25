@@ -23,7 +23,7 @@ import java.util.List;
  **/
 public class CodeGenerator {
     
-    private static final String PROJECT_PATH = System.getProperty("user.dir");
+    private static final String projectPath = System.getProperty("user.dir");
 
     /**
      * 全局配置
@@ -31,7 +31,7 @@ public class CodeGenerator {
     private static GlobalConfig globalConfig(){
         GlobalConfig globalConfig = new GlobalConfig();
         globalConfig.setAuthor("zuoyu");
-        globalConfig.setOutputDir(PROJECT_PATH + "/src/main/java/");
+        globalConfig.setOutputDir(projectPath + "/src/main/java/");
         globalConfig.setDateType(DateType.ONLY_DATE);
         globalConfig.setIdType(IdType.AUTO);
         globalConfig.setSwagger2(true);
@@ -98,7 +98,7 @@ public class CodeGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输出文件名 ， 如果你 Entity 设置了前后缀、此处注意 xml 的名称会跟着发生变化！！
-                return PROJECT_PATH + "/src/main/resources/mapper/"
+                return projectPath + "/src/main/resources/mapper/"
                         + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
             }
         });

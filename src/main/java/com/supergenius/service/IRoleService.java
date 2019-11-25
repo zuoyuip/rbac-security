@@ -4,7 +4,9 @@ import com.supergenius.model.Authority;
 import com.supergenius.model.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -19,8 +21,10 @@ public interface IRoleService extends IService<Role> {
     /**
      * 创建一个角色并给予权限
      * @param role -
-     * @param authorities -
+     * @param authorityIds -
      * @return - boolean
      */
-    boolean save(Role role, List<Authority> authorities);
+    boolean save(Role role, List<Integer> authorityIds);
+
+
 }

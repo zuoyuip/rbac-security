@@ -5,6 +5,7 @@ import com.supergenius.model.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * <p>
@@ -19,8 +20,10 @@ public interface IUserService extends IService<User> {
     /**
      * 创建一个用户并给予角色
      * @param entity -
-     * @param roles -
+     * @param roleIds -
      * @return - boolean
      */
-    boolean save(User entity, List<Role> roles);
+    boolean save(User entity, List<Integer> roleIds);
+
+
 }

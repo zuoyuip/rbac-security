@@ -35,15 +35,15 @@ mybatis-plus:
     #    指定当结果集中值为 null 的时候是否调用映射对象的 Setter（Map 对象时为 put）方法
     call-setters-on-nulls: false
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
-#    列标签
+    #    列标签
     use-column-label: true
-#    允许在嵌套语句中使用分页
+    #    允许在嵌套语句中使用分页
     safe-result-handler-enabled: true
-#    允许 JDBC 支持自动生成主键
+    #    允许 JDBC 支持自动生成主键
     use-generated-keys: false
-#    允许使用方法签名中的名称作为语句参数名称
+    #    允许使用方法签名中的名称作为语句参数名称
     use-actual-param-name: true
-#    允许在嵌套语句中使用分页
+    #    允许在嵌套语句中使用分页
     safe-row-bounds-enabled: true
 
   global-config:
@@ -59,5 +59,7 @@ mybatis-plus:
       select-strategy: not_null
       update-strategy: not_null
       insert-strategy: not_null
+logging:
+  level.com.supergenius.mapper: debug
 swagger:
   enabled: true

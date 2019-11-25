@@ -130,4 +130,13 @@ public class User extends Model<User> implements UserDetails {
     public boolean isEnabled() {
         return this.userIsEnabled;
     }
+
+    public User(String userSecurityName, String userPassWord, String userName, String userNumber, String userPhone, String userEmail) {
+        this.userSecurityName = userSecurityName;
+        this.userPassWord = userPassWord;
+        this.userName = userName;
+        this.userNumber = userNumber;
+        this.userPhone = userPhone;
+        this.userEmail = userEmail;
+    }
 }

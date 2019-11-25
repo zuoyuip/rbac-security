@@ -5,7 +5,6 @@ import com.supergenius.exception.CustomException;
 import com.supergenius.mapper.RoleMapper;
 import com.supergenius.mapper.UserMapper;
 import com.supergenius.mapper.UserRoleMapper;
-import com.supergenius.model.Role;
 import com.supergenius.model.User;
 import com.supergenius.model.UserRole;
 import com.supergenius.service.IUserService;
@@ -45,26 +44,29 @@ class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserServ
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {Exception.class,
             CustomException.class})
-    public boolean save(User user, List<Role> roles) {
+    public boolean save(User user, List<Integer> roleIds) {
         if (!save(user)) {
             throw new CustomException("用户创建失败！");
         }
         AtomicInteger count = new AtomicInteger(0);
-        roles.forEach(role -> {
-            if (!roleMapper.isExistsByRoleId(role.getRoleId())) {
+        roleIds.forEach(roleId -> {
+            if (!roleMapper.isExistsByRoleId(roleId)) {
                 throw new CustomException("角色不存在！");
             }
             count.addAndGet(userRoleMapper.insert(new UserRole().setUserId(user.getUserId())
-                    .setRoleId(role.getRoleId()).setUserRoleCreatTimeStamp(new Date())
+                    .setRoleId(roleId).setUserRoleCreatTimeStamp(new Date())
                     .setUserRoleIsDelete(false)));
         });
-        if (count.get() < roles.size()) {
+        if (count.get() < roleIds.size()) {
             throw new CustomException("用户角色分配失败");
         }
         return true;
     }
 
+
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {Exception.class,
+            CustomException.class})
     public boolean save(User user) {
         if (userMapper.isExistsByUserSecurityName(user.getUserSecurityName())) {
             throw new CustomException("该用户已存在！");
