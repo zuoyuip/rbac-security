@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.mapper.RoleAuthorityMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.supergenius.model.RoleAuthority">
+        <id column="ROLE_AUTHORITY_ID" property="roleAuthorityId" />
+        <result column="ROLE_ID" property="roleId" />
+        <result column="AUTHORITY_ID" property="authorityId" />
+        <result column="ROLE_AUTHORITY_CREAT_TIME_STAMP" property="roleAuthorityCreatTimeStamp" />
+        <result column="ROLE_AUTHORITY_UPDATE_TIME_STAMP" property="roleAuthorityUpdateTimeStamp" />
+        <result column="ROLE_AUTHORITY_IS_DELETE" property="roleAuthorityIsDelete" />
+    </resultMap>
+
+</mapper>

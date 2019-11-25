@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.supergenius.mapper.RoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.supergenius.model.Role">
+        <id column="ROLE_ID" property="roleId"/>
+        <result column="ROLE_NAME" property="roleName"/>
+        <result column="ROLE_IS_DELETE" property="roleIsDelete"/>
+        <result column="ROLE_CREAT_TIME_STAMP" property="roleCreatTimeStamp"/>
+        <result column="ROLE_UPDATE_TIME_STAMP" property="roleUpdateTimeStamp"/>
+    </resultMap>
+    <select id="isExistsByRoleId" resultType="java.lang.Boolean">
+        SELECT IFNULL((SELECT
+                       TOP (1)
+                       1
+                       FROM security.security_role
+                       WHERE ROLE_IS_DELETE = 0
+                         AND ROLE_ID = #{roleId}
+                          ), 0)
+    </select>
+    <select id="isExistsByRoleName" resultType="java.lang.Boolean">
+        SELECT IFNULL((SELECT
+                       TOP (1)
+                       1
+                       FROM security.security_role
+                       WHERE ROLE_IS_DELETE = 0
+                         AND ROLE_NAME = #{roleName}
+                          ), 0)
+    </select>
+
+</mapper>

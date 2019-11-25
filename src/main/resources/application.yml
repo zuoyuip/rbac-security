@@ -1,0 +1,63 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /management
+
+spring:
+  main:
+    web-application-type: SERVLET
+  application:
+    name: management-security
+  datasource:
+    druid:
+      name: security
+      url: jdbc:mysql://localhost:3306/security?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+      driver-class-name: com.mysql.jdbc.Driver
+      username: root
+      password: 123456
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.supergenius.model
+  #  检验xml配置文件
+  check-config-location: true
+  #  MyBatis 的执行器
+  executor-type: simple
+  #  原生配置
+  configuration:
+    aggressive-lazy-loading: true
+    #    懒加载
+    lazy-loading-enabled: true
+    #    自动映射策略
+    auto-mapping-behavior: partial
+    #    自动映射时未知列或未知属性处理策略
+    auto-mapping-unknown-column-behavior: none
+    cache-enabled: false
+    #    指定当结果集中值为 null 的时候是否调用映射对象的 Setter（Map 对象时为 put）方法
+    call-setters-on-nulls: false
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+#    列标签
+    use-column-label: true
+#    允许在嵌套语句中使用分页
+    safe-result-handler-enabled: true
+#    允许 JDBC 支持自动生成主键
+    use-generated-keys: false
+#    允许使用方法签名中的名称作为语句参数名称
+    use-actual-param-name: true
+#    允许在嵌套语句中使用分页
+    safe-row-bounds-enabled: true
+
+  global-config:
+    db-config:
+      #      是否开启大写命名
+      capital-mode: true
+      #      全局默认主键类型
+      id-type: uuid
+      #      表名前缀
+      table-prefix: TB_
+      #      表名是否使用下划线命名
+      table-underline: true
+      select-strategy: not_null
+      update-strategy: not_null
+      insert-strategy: not_null
+swagger:
+  enabled: true
