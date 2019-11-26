@@ -62,4 +62,9 @@ class ArithmeticTest {
 //        one.removeAll(two);
         log.info("差集：" + one);
     }
+
+    @Test
+    void enumTest(){
+        System.out.println();
+    }
 }
