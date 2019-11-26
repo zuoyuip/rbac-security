@@ -1,21 +1,25 @@
 package com.supergenius.model;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-
-import java.util.Collection;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
-import java.io.Serializable;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -29,7 +33,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("security_user")
-@ApiModel(value="User对象", description="安全用户表")
+@ApiModel(value = "User对象", description = "安全用户表")
 public class User extends Model<User> implements UserDetails {
 
     private static final long serialVersionUID = 1L;
@@ -90,6 +94,17 @@ public class User extends Model<User> implements UserDetails {
     @TableField("USER_EMAIL")
     private String userEmail;
 
+    private String authorities;
+
+
+    public User(String userSecurityName, String userPassWord, String userName, String userNumber, String userPhone, String userEmail) {
+        this.userSecurityName = userSecurityName;
+        this.userPassWord = userPassWord;
+        this.userName = userName;
+        this.userNumber = userNumber;
+        this.userPhone = userPhone;
+        this.userEmail = userEmail;
+    }
 
     @Override
     protected Serializable pkVal() {
@@ -98,7 +113,10 @@ public class User extends Model<User> implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        final String spacer = ",";
+        return Arrays.stream(this.authorities.split(spacer))
+                .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority))
+                .collect(Collectors.toCollection(HashSet::new));
     }
 
     @Override
@@ -129,14 +147,5 @@ public class User extends Model<User> implements UserDetails {
     @Override
     public boolean isEnabled() {
         return this.userIsEnabled;
-    }
-
-    public User(String userSecurityName, String userPassWord, String userName, String userNumber, String userPhone, String userEmail) {
-        this.userSecurityName = userSecurityName;
-        this.userPassWord = userPassWord;
-        this.userName = userName;
-        this.userNumber = userNumber;
-        this.userPhone = userPhone;
-        this.userEmail = userEmail;
     }
 }

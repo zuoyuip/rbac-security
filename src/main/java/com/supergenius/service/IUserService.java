@@ -1,9 +1,12 @@
 package com.supergenius.service;
 
+import com.supergenius.model.Authority;
 import com.supergenius.model.Role;
 import com.supergenius.model.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.supergenius.model.vo.Content;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -26,4 +29,26 @@ public interface IUserService extends IService<User> {
     boolean save(User entity, List<Integer> roleIds);
 
 
+    /**
+     * 根据用户名称查询该用户
+     * @param userName - 用户名
+     * @return User
+     */
+    User loadUserByUsername(String userName);
+
+
+    /**
+     * 根据Id查询对应权限
+     * @param userId -
+     * @return List<String>
+     */
+    List<Authority> selectAuthoritiesById(Serializable userId);
+
+
+    /**
+     * 根据用户Id查询对应的目录结构
+     * @param userId -
+     * @return List<Content>
+     */
+    List<Content> getContentsById(Serializable userId);
 }

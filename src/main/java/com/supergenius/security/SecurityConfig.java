@@ -1,9 +1,7 @@
 package com.supergenius.security;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.supergenius.security.constants.SecurityConstants;
-import com.supergenius.model.User;
-import com.supergenius.service.IUserService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
@@ -15,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -38,23 +37,20 @@ import java.io.PrintWriter;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+
+    private final UserDetailsService userDetailsService;
     private final AuthenticationFailureHandler authenticationFailureHandler;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
-    private final IUserService iUserService;
 
-    public SecurityConfig(AuthenticationFailureHandler authenticationFailureHandler, AuthenticationSuccessHandler authenticationSuccessHandler, IUserService iUserService) {
+    public SecurityConfig(@Qualifier("userDetailsServiceImpl")UserDetailsService userDetailsService, AuthenticationFailureHandler authenticationFailureHandler, AuthenticationSuccessHandler authenticationSuccessHandler) {
+        this.userDetailsService = userDetailsService;
         this.authenticationFailureHandler = authenticationFailureHandler;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
-        this.iUserService = iUserService;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userName -> {
-            LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            userLambdaQueryWrapper.eq(User::getUserSecurityName, userName);
-            return iUserService.getOne(userLambdaQueryWrapper);
-        }).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService);
         super.configure(auth);
     }
 

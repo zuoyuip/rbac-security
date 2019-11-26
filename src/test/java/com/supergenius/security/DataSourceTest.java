@@ -3,6 +3,7 @@ package com.supergenius.security;
 import com.supergenius.model.Authority;
 import com.supergenius.model.Role;
 import com.supergenius.model.User;
+import com.supergenius.model.vo.Content;
 import com.supergenius.service.IAuthorityService;
 import com.supergenius.service.IRoleAuthorityService;
 import com.supergenius.service.IRoleService;
@@ -108,5 +109,16 @@ class DataSourceTest extends ManagementSecurityApplicationTests {
                 31, 32, 33, 34, 35, 36, 37, 38, 39);
         boolean isOK = iRoleAuthorityService.updateAuthorities(1, new HashSet<>(authorityIds));
         log.info("result:\t" + isOK);
+    }
+
+    @Test
+    void loginAuthorities(){
+        iUserService.loadUserByUsername("admin").getAuthorities();
+    }
+
+    @Test
+    void userMenus(){
+        List<Content> contents = iUserService.getContentsById(2);
+        contents.forEach(System.out::println);
     }
 }

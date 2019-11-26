@@ -1,8 +1,13 @@
 package com.supergenius.mapper;
 
+import com.supergenius.model.Authority;
 import com.supergenius.model.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.supergenius.model.vo.ContentStructure;
 import org.springframework.stereotype.Repository;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -21,4 +26,25 @@ public interface UserMapper extends BaseMapper<User> {
      * @return - boolean
      */
     boolean isExistsByUserSecurityName(String userSecurityName);
+
+    /**
+     * 根据用户名称查询该用户
+     * @param userName - 用户名
+     * @return User
+     */
+    User loadUserByUsername(String userName);
+
+    /**
+     * 根据Id查询对应权限
+     * @param userId -
+     * @return List<String>
+     */
+    List<Authority> selectAuthoritiesById(Serializable userId);
+
+    /**
+     * 根据Id查询菜单
+     * @param userId -
+     * @return -
+     */
+    List<ContentStructure> getContentStructuresByUserId(Serializable userId);
 }

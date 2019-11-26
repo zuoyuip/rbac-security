@@ -19,6 +19,33 @@
         <result column="USER_PHONE" property="userPhone"/>
         <result column="USER_EMAIL" property="userEmail"/>
     </resultMap>
+
+    <!-- 权限查询映射结果 -->
+    <resultMap id="AuthoritiesResultMap" type="com.supergenius.model.User">
+        <id column="USER_ID" property="userId"/>
+        <result column="USER_SECURITY_NAME" property="userSecurityName"/>
+        <result column="USER_PASS_WORD" property="userPassWord"/>
+        <result column="USER_IS_ENABLED" property="userIsEnabled"/>
+        <result column="USER_IS_ACCOUNT_NON_EXPIRED" property="userIsAccountNonExpired"/>
+        <result column="USER_IS_CREDENTIALS_NON_EXPIRED" property="userIsCredentialsNonExpired"/>
+        <result column="USER_IS_ACCOUNT_NON_LOCKED" property="userIsAccountNonLocked"/>
+        <result column="USER_CREAT_TIME_STAMP" property="userCreatTimeStamp"/>
+        <result column="USER_UPDATE_TIME_STAMP" property="userUpdateTimeStamp"/>
+        <result column="USER_IS_DELETE" property="userIsDelete"/>
+        <result column="USER_NAME" property="userName"/>
+        <result column="USER_NUMBER" property="userNumber"/>
+        <result column="USER_PHONE" property="userPhone"/>
+        <result column="USER_EMAIL" property="userEmail"/>
+        <result column="AUTHORITY_NAMES" property="authorities"/>
+    </resultMap>
+
+    <resultMap id="ContentStructureResultMap" type="com.supergenius.model.vo.ContentStructure">
+        <result column="AUTHORITY_CONTENT" property="contentName"/>
+        <result column="AUTHORITY_MENU" property="menuName"/>
+        <result column="AUTHORITY_MENU_URL" property="url"/>
+    </resultMap>
+
+
     <select id="isExistsByUserSecurityName" resultType="java.lang.Boolean">
         SELECT IFNULL((SELECT 1
                        FROM security.security_user
@@ -27,5 +54,86 @@
                        LIMIT 1
                           ), 0)
     </select>
+
+    <select id="loadUserByUsername" resultMap="AuthoritiesResultMap">
+        SELECT su.USER_ID                           AS USER_ID,
+               su.USER_SECURITY_NAME                AS USER_SECURITY_NAME,
+               su.USER_PASS_WORD                    AS USER_PASS_WORD,
+               su.USER_IS_ENABLED                   AS USER_IS_ENABLED,
+               su.USER_IS_ACCOUNT_NON_EXPIRED       AS USER_IS_ACCOUNT_NON_EXPIRED,
+               su.USER_IS_CREDENTIALS_NON_EXPIRED   AS USER_IS_CREDENTIALS_NON_EXPIRED,
+               su.USER_IS_ACCOUNT_NON_LOCKED        AS USER_IS_ACCOUNT_NON_LOCKED,
+               su.USER_CREAT_TIME_STAMP             AS USER_CREAT_TIME_STAMP,
+               su.USER_UPDATE_TIME_STAMP            AS USER_UPDATE_TIME_STAMP,
+               su.USER_IS_DELETE                    AS USER_IS_DELETE,
+               su.USER_NAME                         AS USER_NAME,
+               su.USER_NUMBER                       AS USER_NUMBER,
+               su.USER_PHONE                        AS USER_PHONE,
+               su.USER_EMAIL                        AS USER_EMAIL,
+               GROUP_CONCAT(sa.AUTHORITY_NAME, ',') AS AUTHORITY_NAMES
+        FROM security.security_user su,
+             security.security_user_role sur,
+             security.security_role sr,
+             security.security_role_authority sra,
+             security.security_authority sa
+        WHERE sa.AUTHORITY_ID = sra.AUTHORITY_ID
+          AND sa.AUTHORITY_IS_DELETE = 0
+          AND sra.ROLE_ID = sr.ROLE_ID
+          AND sra.ROLE_AUTHORITY_IS_DELETE = 0
+          AND sr.ROLE_ID = sur.ROLE_ID
+          AND sr.ROLE_IS_DELETE = 0
+          AND sur.USER_ID = su.USER_ID
+          AND sur.USER_ROLE_IS_DELETE = 0
+          AND su.USER_IS_DELETE = 0
+          AND su.USER_SECURITY_NAME = #{userName}
+        GROUP BY su.USER_ID
+    </select>
+    <select id="selectAuthoritiesById" resultMap="com.supergenius.mapper.AuthorityMapper.BaseResultMap">
+        SELECT sa.AUTHORITY_ID                AS AUTHORITY_ID,
+               sa.AUTHORITY_NAME              AS AUTHORITY_NAME,
+               sa.AUTHORITY_CONTENT           AS AUTHORITY_CONTENT,
+               sa.AUTHORITY_MENU              AS AUTHORITY_MENU,
+               sa.AUTHORITY_MENU_URL          AS AUTHORITY_MENU_URL,
+               sa.AUTHORITY_CREAT_TIME_STAMP  AS AUTHORITY_CREAT_TIME_STAMP,
+               sa.AUTHORITY_UPDATE_TIME_STAMP AS AUTHORITY_UPDATE_TIME_STAMP,
+               sa.AUTHORITY_IS_DELETE         AS AUTHORITY_IS_DELETE
+        FROM security.security_user su,
+             security.security_user_role sur,
+             security.security_role sr,
+             security.security_role_authority sra,
+             security.security_authority sa
+        WHERE sa.AUTHORITY_ID = sra.AUTHORITY_ID
+          AND sa.AUTHORITY_IS_DELETE = 0
+          AND sra.ROLE_ID = sr.ROLE_ID
+          AND sra.ROLE_AUTHORITY_IS_DELETE = 0
+          AND sr.ROLE_ID = sur.ROLE_ID
+          AND sr.ROLE_IS_DELETE = 0
+          AND sur.USER_ID = su.USER_ID
+          AND sur.USER_ROLE_IS_DELETE = 0
+          AND su.USER_IS_DELETE = 0
+          AND su.USER_ID = #{userId}
+    </select>
+
+    <select id="getContentStructuresByUserId" resultMap="ContentStructureResultMap">
+        SELECT sa.AUTHORITY_CONTENT  AS AUTHORITY_CONTENT,
+               sa.AUTHORITY_MENU     AS AUTHORITY_MENU,
+               sa.AUTHORITY_MENU_URL AS AUTHORITY_MENU_URL
+        FROM security.security_user su,
+             security.security_user_role sur,
+             security.security_role sr,
+             security.security_role_authority sra,
+             security.security_authority sa
+        WHERE sa.AUTHORITY_ID = sra.AUTHORITY_ID
+          AND sa.AUTHORITY_IS_DELETE = 0
+          AND sra.ROLE_ID = sr.ROLE_ID
+          AND sra.ROLE_AUTHORITY_IS_DELETE = 0
+          AND sr.ROLE_ID = sur.ROLE_ID
+          AND sr.ROLE_IS_DELETE = 0
+          AND sur.USER_ID = su.USER_ID
+          AND sur.USER_ROLE_IS_DELETE = 0
+          AND su.USER_IS_DELETE = 0
+          AND su.USER_ID = #{userId}
+    </select>
+
 
 </mapper>

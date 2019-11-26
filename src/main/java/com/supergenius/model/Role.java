@@ -7,6 +7,8 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -51,6 +53,8 @@ public class Role extends Model<Role> {
     @ApiModelProperty(value = "角色的修改时间")
     @TableField("ROLE_UPDATE_TIME_STAMP")
     private Date roleUpdateTimeStamp;
+
+    private List<Authority> authorities;
 
 
     @Override

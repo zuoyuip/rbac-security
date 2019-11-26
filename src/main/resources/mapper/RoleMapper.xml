@@ -9,6 +9,7 @@
         <result column="ROLE_IS_DELETE" property="roleIsDelete"/>
         <result column="ROLE_CREAT_TIME_STAMP" property="roleCreatTimeStamp"/>
         <result column="ROLE_UPDATE_TIME_STAMP" property="roleUpdateTimeStamp"/>
+
     </resultMap>
     <select id="isExistsByRoleId" resultType="java.lang.Boolean">
         SELECT IFNULL((SELECT 1

@@ -5,8 +5,12 @@ import com.supergenius.exception.CustomException;
 import com.supergenius.mapper.RoleMapper;
 import com.supergenius.mapper.UserMapper;
 import com.supergenius.mapper.UserRoleMapper;
+import com.supergenius.model.Authority;
 import com.supergenius.model.User;
 import com.supergenius.model.UserRole;
+import com.supergenius.model.vo.Content;
+import com.supergenius.model.vo.ContentStructure;
+import com.supergenius.model.vo.Menu;
 import com.supergenius.service.IUserService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,9 +18,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -61,6 +69,33 @@ class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserServ
             throw new CustomException("用户角色分配失败");
         }
         return true;
+    }
+
+    @Override
+    public User loadUserByUsername(String userName) {
+        return userMapper.loadUserByUsername(userName);
+    }
+
+    @Override
+    public List<Authority> selectAuthoritiesById(Serializable userId) {
+        return userMapper.selectAuthoritiesById(userId);
+    }
+
+    @Override
+    public List<Content> getContentsById(Serializable userId) {
+        List<ContentStructure> contentStructures = userMapper.getContentStructuresByUserId(userId);
+//        分组
+        Map<String, List<ContentStructure>> contentGroup = contentStructures.stream()
+                .collect(Collectors.groupingBy(ContentStructure::getContentName));
+//        根据分组再次组装对象
+        return contentGroup.keySet().parallelStream().map(key -> {
+            Content content = new Content(key);
+            List<Menu> menus = new ArrayList<>(contentGroup.get(key).size());
+            menus.addAll(contentGroup.get(key).stream().map(contentStructure ->
+                    new Menu(contentStructure.getMenuName(), contentStructure.getUrl()))
+                    .collect(Collectors.toList()));
+            return content.setMenus(menus);
+        }).collect(Collectors.toList());
     }
 
 
