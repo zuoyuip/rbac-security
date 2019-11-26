@@ -52,9 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userName -> {
             LambdaQueryWrapper<User> userLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            userLambdaQueryWrapper.eq(User::getUsername, userName);
+            userLambdaQueryWrapper.eq(User::getUserSecurityName, userName);
             return iUserService.getOne(userLambdaQueryWrapper);
-        });
+        }).passwordEncoder(passwordEncoder());
         super.configure(auth);
     }
 
