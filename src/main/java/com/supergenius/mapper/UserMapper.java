@@ -1,6 +1,7 @@
 package com.supergenius.mapper;
 
 import com.supergenius.model.Authority;
+import com.supergenius.model.Role;
 import com.supergenius.model.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.supergenius.model.vo.ContentStructure;
@@ -40,6 +41,13 @@ public interface UserMapper extends BaseMapper<User> {
      * @return List<String>
      */
     List<Authority> selectAuthoritiesById(Serializable userId);
+
+    /**
+     * 根据Id查询对应的角色
+     * @param userId -
+     * @return - List<Role>
+     */
+    List<Role> selectRolesById(Serializable userId);
 
     /**
      * 根据Id查询菜单

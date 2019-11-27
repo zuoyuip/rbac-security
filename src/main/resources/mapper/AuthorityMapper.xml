@@ -21,5 +21,28 @@
                        LIMIT 1
                           ), 0)
     </select>
+    <select id="isExistsByAuthorityNameOrMenu" resultType="java.lang.Boolean">
+        SELECT IFNULL((SELECT 1
+        FROM security.security_authority
+        WHERE AUTHORITY_IS_DELETE = 0
+        <choose>
+            <when test="authorityName != null and  authorityMenu != null">
+                AND (
+                AUTHORITY_NAME = #{authorityName} OR AUTHORITY_MENU = #{authorityMenu}
+                )
+            </when>
+            <when test="authorityName != null">
+                AND AUTHORITY_NAME = #{authorityName}
+            </when>
+            <when test="authorityMenu != null">
+                AND AUTHORITY_MENU = #{authorityMenu}
+            </when>
+            <otherwise>
+                AND TRUE
+            </otherwise>
+        </choose>
+        LIMIT 1
+        ), 0)
+    </select>
 
 </mapper>

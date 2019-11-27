@@ -38,9 +38,25 @@ public interface IUserService extends IService<User> {
 
 
     /**
+     * 根据Id查询对应的角色
+     * @param userId -
+     * @return - List<Role>
+     */
+    List<Role> selectRolesById(Serializable userId);
+
+
+    /**
      * 根据用户Id查询对应的目录结构
      * @param userId -
      * @return List<Content>
      */
     List<Content> getContentsById(Serializable userId);
+
+    /**
+     * 创建用户同时赋予其角色
+     * @param user - 用户
+     * @param roleIds - 角色Id
+     * @return boolean
+     */
+    boolean save(User user, List<Integer> roleIds);
 }

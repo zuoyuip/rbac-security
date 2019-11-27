@@ -58,6 +58,7 @@ public class UserRole extends Model<UserRole> {
     private Boolean userRoleIsDelete;
 
 
+
     @Override
     protected Serializable pkVal() {
         return this.userRoleId;

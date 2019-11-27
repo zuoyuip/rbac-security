@@ -15,10 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -94,6 +91,7 @@ public class User extends Model<User> implements UserDetails {
     @TableField("USER_EMAIL")
     private String userEmail;
 
+    @TableField(exist = false)
     private String authorities;
 
 
@@ -113,6 +111,9 @@ public class User extends Model<User> implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.authorities == null || this.authorities.isEmpty()){
+            return new HashSet<>(0);
+        }
         final String spacer = ",";
         return Arrays.stream(this.authorities.split(spacer))
                 .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority))

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,13 +46,24 @@ class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> implemen
         }
 //        在这里，取新角色的集合与原角色的差集进行添加
         List<UserRole> newUserRoles = roleIds.stream().filter(roleId -> !oldRoleIds.contains(roleId))
-                .map(id -> new UserRole(userId, id).setUserRoleCreatTimeStamp(new Date())
-                        .setUserRoleIsDelete(false)).collect(Collectors.toList());
+                .map(id -> new UserRole(userId, id)).collect(Collectors.toList());
         if (newUserRoles.size() > 0) {
             if (!saveBatch(newUserRoles)) {
                 throw new CustomException("更新角色错误：添加");
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean save(UserRole entity) {
+        return super.save(entity.setUserRoleCreatTimeStamp(new Date()).setUserRoleIsDelete(false));
+    }
+
+    @Override
+    public boolean saveBatch(Collection<UserRole> entityList) {
+        return super.saveBatch(entityList.stream().map(authority ->
+                authority.setUserRoleCreatTimeStamp(new Date()).setUserRoleIsDelete(false))
+                .collect(Collectors.toList()));
     }
 }

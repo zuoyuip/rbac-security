@@ -2,6 +2,7 @@ package com.supergenius.service;
 
 import com.supergenius.model.Authority;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>

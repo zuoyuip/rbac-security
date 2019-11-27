@@ -56,21 +56,21 @@
     </select>
 
     <select id="loadUserByUsername" resultMap="AuthoritiesResultMap">
-        SELECT su.USER_ID                           AS USER_ID,
-               su.USER_SECURITY_NAME                AS USER_SECURITY_NAME,
-               su.USER_PASS_WORD                    AS USER_PASS_WORD,
-               su.USER_IS_ENABLED                   AS USER_IS_ENABLED,
-               su.USER_IS_ACCOUNT_NON_EXPIRED       AS USER_IS_ACCOUNT_NON_EXPIRED,
-               su.USER_IS_CREDENTIALS_NON_EXPIRED   AS USER_IS_CREDENTIALS_NON_EXPIRED,
-               su.USER_IS_ACCOUNT_NON_LOCKED        AS USER_IS_ACCOUNT_NON_LOCKED,
-               su.USER_CREAT_TIME_STAMP             AS USER_CREAT_TIME_STAMP,
-               su.USER_UPDATE_TIME_STAMP            AS USER_UPDATE_TIME_STAMP,
-               su.USER_IS_DELETE                    AS USER_IS_DELETE,
-               su.USER_NAME                         AS USER_NAME,
-               su.USER_NUMBER                       AS USER_NUMBER,
-               su.USER_PHONE                        AS USER_PHONE,
-               su.USER_EMAIL                        AS USER_EMAIL,
-               GROUP_CONCAT(sa.AUTHORITY_NAME, ',') AS AUTHORITY_NAMES
+        SELECT su.USER_ID                          AS USER_ID,
+               su.USER_SECURITY_NAME               AS USER_SECURITY_NAME,
+               su.USER_PASS_WORD                   AS USER_PASS_WORD,
+               su.USER_IS_ENABLED                  AS USER_IS_ENABLED,
+               su.USER_IS_ACCOUNT_NON_EXPIRED      AS USER_IS_ACCOUNT_NON_EXPIRED,
+               su.USER_IS_CREDENTIALS_NON_EXPIRED  AS USER_IS_CREDENTIALS_NON_EXPIRED,
+               su.USER_IS_ACCOUNT_NON_LOCKED       AS USER_IS_ACCOUNT_NON_LOCKED,
+               su.USER_CREAT_TIME_STAMP            AS USER_CREAT_TIME_STAMP,
+               su.USER_UPDATE_TIME_STAMP           AS USER_UPDATE_TIME_STAMP,
+               su.USER_IS_DELETE                   AS USER_IS_DELETE,
+               su.USER_NAME                        AS USER_NAME,
+               su.USER_NUMBER                      AS USER_NUMBER,
+               su.USER_PHONE                       AS USER_PHONE,
+               su.USER_EMAIL                       AS USER_EMAIL,
+               GROUP_CONCAT(sa.AUTHORITY_NAME, '') AS AUTHORITY_NAMES
         FROM security.security_user su,
              security.security_user_role sur,
              security.security_role sr,
@@ -128,6 +128,23 @@
           AND sra.ROLE_ID = sr.ROLE_ID
           AND sra.ROLE_AUTHORITY_IS_DELETE = 0
           AND sr.ROLE_ID = sur.ROLE_ID
+          AND sr.ROLE_IS_DELETE = 0
+          AND sur.USER_ID = su.USER_ID
+          AND sur.USER_ROLE_IS_DELETE = 0
+          AND su.USER_IS_DELETE = 0
+          AND su.USER_ID = #{userId}
+    </select>
+
+    <select id="selectRolesById" resultMap="com.supergenius.mapper.RoleMapper.BaseResultMap">
+        SELECT sr.ROLE_ID                AS ROLE_ID,
+               sr.ROLE_NAME              AS ROLE_NAME,
+               sr.ROLE_IS_DELETE         AS ROLE_IS_DELETE,
+               sr.ROLE_CREAT_TIME_STAMP  AS ROLE_CREAT_TIME_STAMP,
+               sr.ROLE_UPDATE_TIME_STAMP AS ROLE_UPDATE_TIME_STAMP
+        FROM security.security_user su,
+             security.security_user_role sur,
+             security.security_role sr
+        WHERE sr.ROLE_ID = sur.ROLE_ID
           AND sr.ROLE_IS_DELETE = 0
           AND sur.USER_ID = su.USER_ID
           AND sur.USER_ROLE_IS_DELETE = 0

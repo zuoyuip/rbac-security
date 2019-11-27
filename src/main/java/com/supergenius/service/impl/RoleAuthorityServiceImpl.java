@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,13 +46,25 @@ class RoleAuthorityServiceImpl extends ServiceImpl<RoleAuthorityMapper, RoleAuth
         }
 //        在这里，取新权限集合与原权限集合的差集进行添加
         List<RoleAuthority> newRoleAuthorities = authorityIds.stream().filter(authorityId -> !oldAuthorityIds.contains(authorityId)).map(id ->
-                new RoleAuthority(roleId, id).setRoleAuthorityCreatTimeStamp(new Date())
-                        .setRoleAuthorityIsDelete(false)).collect(Collectors.toList());
+                new RoleAuthority(roleId, id)).collect(Collectors.toList());
         if (newRoleAuthorities.size() > 0) {
             if (!saveBatch(newRoleAuthorities)) {
                 throw new CustomException("更新权限错误：添加");
             }
         }
         return true;
+    }
+
+
+    @Override
+    public boolean save(RoleAuthority entity) {
+        return super.save(entity.setRoleAuthorityCreatTimeStamp(new Date()).setRoleAuthorityIsDelete(false));
+    }
+
+    @Override
+    public boolean saveBatch(Collection<RoleAuthority> entityList) {
+        return super.saveBatch(entityList.stream().map(authority ->
+                authority.setRoleAuthorityCreatTimeStamp(new Date()).setRoleAuthorityIsDelete(false))
+                .collect(Collectors.toList()));
     }
 }

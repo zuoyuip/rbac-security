@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,8 +42,8 @@ class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleServ
         if (!save(role)) {
             throw new CustomException("创建角色失败");
         }
-        List<RoleAuthority> roleAuthorities = authorityIds.stream().map(authorityId-> new RoleAuthority(role.getRoleId(), authorityId)
-                .setRoleAuthorityCreatTimeStamp(new Date()).setRoleAuthorityIsDelete(false)).collect(Collectors.toList());
+        List<RoleAuthority> roleAuthorities = authorityIds.stream().map(authorityId->
+                new RoleAuthority(role.getRoleId(), authorityId)).collect(Collectors.toList());
         if (!iRoleAuthorityService.saveBatch(roleAuthorities)){
             throw new CustomException("权限分配异常");
         }
@@ -59,5 +60,12 @@ class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleServ
         }
         role.setRoleCreatTimeStamp(new Date()).setRoleIsDelete(false);
         return super.save(role);
+    }
+
+    @Override
+    public boolean saveBatch(Collection<Role> entityList) {
+        return super.saveBatch(entityList.stream().map(authority ->
+                authority.setRoleCreatTimeStamp(new Date()).setRoleIsDelete(false))
+                .collect(Collectors.toList()));
     }
 }

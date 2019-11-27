@@ -1,5 +1,6 @@
 package com.supergenius.security;
 
+import com.supergenius.mapper.AuthorityMapper;
 import com.supergenius.model.Authority;
 import com.supergenius.model.Role;
 import com.supergenius.model.User;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -37,6 +37,9 @@ class DataSourceTest extends ManagementSecurityApplicationTests {
 
     @Autowired
     private IRoleAuthorityService iRoleAuthorityService;
+
+    @Autowired
+    private AuthorityMapper authorityMapper;
 
     @Test
     void authorityWrite() {
@@ -78,11 +81,16 @@ class DataSourceTest extends ManagementSecurityApplicationTests {
                 new Authority("TAG_FEEDBACK", "反馈管理", "举报标签管理", "feedback/tag"),
                 new Authority("SMS_SETTING", "设置管理", "短信消息管理", "setting/sms"),
                 new Authority("STATION_SETTING", "设置管理", "站内消息管理", "setting/station"),
-                new Authority("user_management", "权限管理", "成员管理", "management/user"),
-                new Authority("role_management", "权限管理", "角色管理", "management/role")
+                new Authority("USER_MANAGEMENT", "权限管理", "成员管理", "management/user"),
+                new Authority("ROLE_MANAGEMENT", "权限管理", "角色管理", "management/role")
         );
         boolean isOK = iAuthorityService.saveBatch(authorities);
         log.info("result:\t" + isOK);
+    }
+
+    @Test
+    void makeAnyMouse() {
+        new Authority("ROLE_MANAGEMENT", "权限管理", "角色管理", "management/role");
     }
 
     @Test
@@ -94,16 +102,51 @@ class DataSourceTest extends ManagementSecurityApplicationTests {
         log.info("result:\t" + isOK);
     }
 
+    @Test
+    void makeRoleUser() {
+        List<Integer> authorityIds = Arrays.asList(16, 17, 18, 19, 20, 21);
+        boolean isOK = iRoleService.save(new Role("User"), authorityIds);
+        log.info("result:\t" + isOK);
+    }
 
     @Test
-    void makeUserAdmin(){
+    void makeRoleOpera() {
+        List<Integer> authorityIds = Arrays.asList(8, 9, 10, 11, 12, 13);
+        boolean isOK = iRoleService.save(new Role("Opera"), authorityIds);
+        log.info("result:\t" + isOK);
+    }
+
+    @Test
+    void makeRoleIncubator() {
+        List<Integer> authorityIds = Arrays.asList(22, 23, 24, 25, 26, 27, 28);
+        boolean isOK = iRoleService.save(new Role("Incubator"), authorityIds);
+        log.info("result:\t" + isOK);
+    }
+
+    @Test
+    void makeUserOperaIncubator() {
+        User user = new User("opera", "123456", "Opera", "1003", "18739100873", "super@foxmail.com");
+        boolean isOK = iUserService.save(user, Arrays.asList(3, 4));
+        log.info("result:\t" + isOK);
+    }
+
+
+    @Test
+    void makeUserAdmin() {
         User user = new User("admin", "iPadAir", "admin", "1001", "15838271463", "zuoyuip@foxmail.com");
         boolean isOK = iUserService.save(user);
         log.info("result:\t" + isOK);
     }
 
     @Test
-    void updateAuthorities(){
+    void makeUser() {
+        User user = new User("user", "123456", "user", "1002", "13849069391", "youyiip@foxmail.com");
+        boolean isOK = iUserService.save(user, Collections.singletonList(2));
+        log.info("result:\t" + isOK);
+    }
+
+    @Test
+    void updateAuthorities() {
         List<Integer> authorityIds = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
                 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
                 31, 32, 33, 34, 35, 36, 37, 38, 39);
@@ -112,13 +155,25 @@ class DataSourceTest extends ManagementSecurityApplicationTests {
     }
 
     @Test
-    void loginAuthorities(){
+    void loginAuthorities() {
         iUserService.loadUserByUsername("admin").getAuthorities();
     }
 
     @Test
-    void userMenus(){
+    void userMenus() {
         List<Content> contents = iUserService.getContentsById(2);
         contents.forEach(System.out::println);
     }
+
+    @Test
+    void testMenus() {
+        boolean isHave = authorityMapper.isExistsByAuthorityNameOrMenu("SYSTEM_INDEX", "haha");
+        System.out.println(isHave);
+    }
+
+    @Test
+    void testSelectRoles(){
+        iUserService.selectRolesById(5).forEach(System.out::println);
+    }
+
 }

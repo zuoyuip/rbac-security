@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.supergenius.exception.CustomException;
 import com.supergenius.mapper.UserMapper;
 import com.supergenius.model.Authority;
+import com.supergenius.model.Role;
 import com.supergenius.model.User;
+import com.supergenius.model.UserRole;
 import com.supergenius.model.vo.Content;
 import com.supergenius.model.vo.ContentStructure;
 import com.supergenius.model.vo.Menu;
+import com.supergenius.service.IUserRoleService;
 import com.supergenius.service.IUserService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,8 +40,11 @@ class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserServ
 
     private final UserMapper userMapper;
 
-    UserServiceImpl(UserMapper userMapper) {
+    private final IUserRoleService iUserRoleService;
+
+    UserServiceImpl(UserMapper userMapper, IUserRoleService iUserRoleService) {
         this.userMapper = userMapper;
+        this.iUserRoleService = iUserRoleService;
     }
 
 
@@ -50,6 +56,11 @@ class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserServ
     @Override
     public List<Authority> selectAuthoritiesById(Serializable userId) {
         return userMapper.selectAuthoritiesById(userId);
+    }
+
+    @Override
+    public List<Role> selectRolesById(Serializable userId) {
+        return userMapper.selectRolesById(userId);
     }
 
     @Override
@@ -69,6 +80,19 @@ class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserServ
         }).collect(Collectors.toList());
     }
 
+    @Override
+    public boolean save(User user, List<Integer> roleIds) {
+        if (!save(user)) {
+            throw new CustomException("用户创建失败");
+        }
+        List<UserRole> userRoles = roleIds.stream().map(roleId ->
+                new UserRole(user.getUserId(), roleId)).collect(Collectors.toList());
+        if (!iUserRoleService.saveBatch(userRoles)) {
+            throw new CustomException("角色分配异常");
+        }
+        return true;
+    }
+
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {Exception.class,
@@ -85,4 +109,6 @@ class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserServ
                 .setUserIsDelete(false);
         return super.save(user);
     }
+
+
 }

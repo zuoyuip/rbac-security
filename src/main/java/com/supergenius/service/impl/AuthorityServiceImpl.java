@@ -1,9 +1,11 @@
 package com.supergenius.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.supergenius.exception.CustomException;
 import com.supergenius.mapper.AuthorityMapper;
 import com.supergenius.model.Authority;
 import com.supergenius.service.IAuthorityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -21,10 +23,19 @@ import java.util.stream.Collectors;
 @Service
 class AuthorityServiceImpl extends ServiceImpl<AuthorityMapper, Authority> implements IAuthorityService {
 
+    private final AuthorityMapper authorityMapper;
+
+    public AuthorityServiceImpl(AuthorityMapper authorityMapper) {
+        this.authorityMapper = authorityMapper;
+    }
+
     @Override
     public boolean save(Authority authority) {
-        authority.setAuthorityCreatTimeStamp(new Date()).setAuthorityIsDelete(false);
-        return super.save(authority);
+        boolean isExists = authorityMapper.isExistsByAuthorityNameOrMenu(authority.getAuthorityName(), authority.getAuthorityMenu());
+        if (isExists) {
+            throw new CustomException("该权限已存在");
+        }
+        return super.save(authority.setAuthorityCreatTimeStamp(new Date()).setAuthorityIsDelete(false));
     }
 
     @Override
@@ -33,4 +44,5 @@ class AuthorityServiceImpl extends ServiceImpl<AuthorityMapper, Authority> imple
                 authority.setAuthorityCreatTimeStamp(new Date()).setAuthorityIsDelete(false))
                 .collect(Collectors.toList()));
     }
+
 }

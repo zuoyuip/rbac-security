@@ -1,9 +1,14 @@
 package com.supergenius.config;
 
+import com.google.common.base.Charsets;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+
+import java.util.List;
 
 /**
  * @author : zuoyu
@@ -34,5 +39,14 @@ public class WebConfig extends WebMvcConfigurationSupport {
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
         super.addResourceHandlers(registry);
+    }
+
+    /**
+     * 解决乱码（Windows真垃圾）
+     */
+    @Override
+    protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(new StringHttpMessageConverter(Charsets.UTF_8));
+        super.configureMessageConverters(converters);
     }
 }
