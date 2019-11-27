@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -25,14 +26,12 @@ public interface RoleAuthorityMapper extends BaseMapper<RoleAuthority> {
      * @param roleId -
      * @return Set<Integer>
      */
-    Set<Integer> selectAuthoritiesByRoleId(Serializable roleId);
+    List<Integer> selectAuthoritiesByRoleId(Serializable roleId);
 
     /**
      * 根据角色Id和权限Id删除数据
-     *
-     * @param roleId      - 角色Id
-     * @param authorityId - 权限Id
+     * @param roleAuthorities -
      * @return boolean
      */
-    boolean deleteAuthoritiesById(@Param("roleId") Serializable roleId, @Param("authorityId") Serializable authorityId);
+    boolean deleteRoleAuthorities(@Param("roleAuthorities") List<RoleAuthority> roleAuthorities);
 }

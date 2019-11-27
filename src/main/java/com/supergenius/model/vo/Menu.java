@@ -1,6 +1,5 @@
 package com.supergenius.model.vo;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -8,8 +7,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-
-import java.util.List;
 
 /**
  * @author : zuoyu
@@ -22,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value="Menu对象", description="菜单")
+@ApiModel(value = "Menu对象", description = "菜单")
 public class Menu {
 
     @ApiModelProperty(value = "菜单名称")

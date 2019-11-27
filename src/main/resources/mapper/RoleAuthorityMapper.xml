@@ -11,13 +11,19 @@
         <result column="ROLE_AUTHORITY_UPDATE_TIME_STAMP" property="roleAuthorityUpdateTimeStamp"/>
         <result column="ROLE_AUTHORITY_IS_DELETE" property="roleAuthorityIsDelete"/>
     </resultMap>
-    <update id="deleteAuthoritiesById">
+    <update id="deleteRoleAuthorities" parameterType="java.util.List">
         UPDATE security.security_role_authority
-        SET ROLE_AUTHORITY_IS_DELETE         = 1,
-            ROLE_AUTHORITY_UPDATE_TIME_STAMP = NOW()
-        WHERE (AUTHORITY_ID = #{authorityId}
-            AND ROLE_ID = #{roleId}
-            AND ROLE_AUTHORITY_IS_DELETE = 0)
+        SET ROLE_AUTHORITY_IS_DELETE = 1,
+        ROLE_AUTHORITY_UPDATE_TIME_STAMP = NOW()
+        WHERE
+        FALSE
+        <foreach collection="roleAuthorities" index="index" item="roleAuthority">
+            OR (
+            AUTHORITY_ID = #{roleAuthority.authorityId}
+            AND ROLE_ID = #{roleAuthority.roleId}
+            AND ROLE_AUTHORITY_IS_DELETE = 0
+            )
+        </foreach>
     </update>
     <select id="selectAuthoritiesByRoleId" resultType="java.lang.Integer">
         SELECT AUTHORITY_ID

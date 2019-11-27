@@ -10,7 +10,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -32,16 +33,25 @@ class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole> implemen
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {Exception.class,
             CustomException.class})
-    public boolean updateRole(Integer userId, Set<Integer> roleIds) {
+    public boolean updateRole(Integer userId, List<Integer> roleIds) {
 //        在这里，取原角色的集合与新角色的差集进行删除
-        Set<Integer> oldRoleIds = userRoleMapper.selectRoleByUserId(userId);
-        oldRoleIds.stream().filter(roleId -> !roleIds.contains(roleId)).forEach(id ->
-                userRoleMapper.deleteRolesById(userId, id)
-        );
+        List<Integer> oldRoleIds = userRoleMapper.selectRoleByUserId(userId);
+        List<UserRole> oldUserRoles = oldRoleIds.stream().filter(roleId -> !roleIds.contains(roleId))
+                .map(id -> new UserRole(userId, id)).collect(Collectors.toList());
+        if (oldUserRoles.size() > 0) {
+            if (!userRoleMapper.deleteUserRoles(oldUserRoles)) {
+                throw new CustomException("更新角色错误：删除");
+            }
+        }
 //        在这里，取新角色的集合与原角色的差集进行添加
-        roleIds.stream().filter(roleId -> !oldRoleIds.contains(roleId)).forEach(id ->
-                userRoleMapper.insert(new UserRole().setUserId(userId).setRoleId(id)
-                        .setUserRoleCreatTimeStamp(new Date()).setUserRoleIsDelete(false)));
+        List<UserRole> newUserRoles = roleIds.stream().filter(roleId -> !oldRoleIds.contains(roleId))
+                .map(id -> new UserRole(userId, id).setUserRoleCreatTimeStamp(new Date())
+                        .setUserRoleIsDelete(false)).collect(Collectors.toList());
+        if (newUserRoles.size() > 0) {
+            if (!saveBatch(newUserRoles)) {
+                throw new CustomException("更新角色错误：添加");
+            }
+        }
         return true;
     }
 }

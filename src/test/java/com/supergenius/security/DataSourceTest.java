@@ -98,7 +98,7 @@ class DataSourceTest extends ManagementSecurityApplicationTests {
     @Test
     void makeUserAdmin(){
         User user = new User("admin", "iPadAir", "admin", "1001", "15838271463", "zuoyuip@foxmail.com");
-        boolean isOK = iUserService.save(user, Collections.singletonList(1));
+        boolean isOK = iUserService.save(user);
         log.info("result:\t" + isOK);
     }
 
@@ -107,7 +107,7 @@ class DataSourceTest extends ManagementSecurityApplicationTests {
         List<Integer> authorityIds = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
                 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
                 31, 32, 33, 34, 35, 36, 37, 38, 39);
-        boolean isOK = iRoleAuthorityService.updateAuthorities(1, new HashSet<>(authorityIds));
+        boolean isOK = iRoleAuthorityService.updateAuthorities(1, authorityIds);
         log.info("result:\t" + isOK);
     }
 

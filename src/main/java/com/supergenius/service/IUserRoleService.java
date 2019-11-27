@@ -3,6 +3,7 @@ package com.supergenius.service;
 import com.supergenius.model.UserRole;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,5 +22,5 @@ public interface IUserRoleService extends IService<UserRole> {
      * @param roleIds -
      * @return - boolean
      */
-    boolean updateRole(Integer userId, Set<Integer> roleIds);
+    boolean updateRole(Integer userId, List<Integer> roleIds);
 }

@@ -10,7 +10,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -32,15 +33,25 @@ class RoleAuthorityServiceImpl extends ServiceImpl<RoleAuthorityMapper, RoleAuth
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {Exception.class,
             CustomException.class})
-    public boolean updateAuthorities(Integer roleId, Set<Integer> authorityIds) {
+    public boolean updateAuthorities(Integer roleId, List<Integer> authorityIds) {
 //        在这里，取原权限集合与新权限集合的差集进行删除
-        Set<Integer> oldAuthorityIds = roleAuthorityMapper.selectAuthoritiesByRoleId(roleId);
-        oldAuthorityIds.stream().filter(authorityId -> !authorityIds.contains(authorityId)).forEach(id ->
-                roleAuthorityMapper.deleteAuthoritiesById(roleId, id));
+        List<Integer> oldAuthorityIds = roleAuthorityMapper.selectAuthoritiesByRoleId(roleId);
+        List<RoleAuthority> oldRoleAuthorities = oldAuthorityIds.stream().filter(authorityId -> !authorityIds.contains(authorityId)).map(id ->
+                new RoleAuthority(roleId, id)).collect(Collectors.toList());
+        if (oldRoleAuthorities.size() > 0) {
+            if (!roleAuthorityMapper.deleteRoleAuthorities(oldRoleAuthorities)) {
+                throw new CustomException("更新权限错误：删除");
+            }
+        }
 //        在这里，取新权限集合与原权限集合的差集进行添加
-        authorityIds.stream().filter(authorityId -> !oldAuthorityIds.contains(authorityId)).forEach(id ->
-                roleAuthorityMapper.insert(new RoleAuthority().setRoleId(roleId).setAuthorityId(id)
-                        .setRoleAuthorityCreatTimeStamp(new Date()).setRoleAuthorityIsDelete(false)));
+        List<RoleAuthority> newRoleAuthorities = authorityIds.stream().filter(authorityId -> !oldAuthorityIds.contains(authorityId)).map(id ->
+                new RoleAuthority(roleId, id).setRoleAuthorityCreatTimeStamp(new Date())
+                        .setRoleAuthorityIsDelete(false)).collect(Collectors.toList());
+        if (newRoleAuthorities.size() > 0) {
+            if (!saveBatch(newRoleAuthorities)) {
+                throw new CustomException("更新权限错误：添加");
+            }
+        }
         return true;
     }
 }

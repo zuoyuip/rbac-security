@@ -2,12 +2,9 @@ package com.supergenius.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.supergenius.exception.CustomException;
-import com.supergenius.mapper.RoleMapper;
 import com.supergenius.mapper.UserMapper;
-import com.supergenius.mapper.UserRoleMapper;
 import com.supergenius.model.Authority;
 import com.supergenius.model.User;
-import com.supergenius.model.UserRole;
 import com.supergenius.model.vo.Content;
 import com.supergenius.model.vo.ContentStructure;
 import com.supergenius.model.vo.Menu;
@@ -23,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -40,36 +36,11 @@ class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserServ
     private final PasswordEncoder PASSWORDENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     private final UserMapper userMapper;
-    private final RoleMapper roleMapper;
-    private final UserRoleMapper userRoleMapper;
 
-    UserServiceImpl(UserMapper userMapper, RoleMapper roleMapper, UserRoleMapper userRoleMapper) {
+    UserServiceImpl(UserMapper userMapper) {
         this.userMapper = userMapper;
-        this.roleMapper = roleMapper;
-        this.userRoleMapper = userRoleMapper;
     }
 
-    @Override
-    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = {Exception.class,
-            CustomException.class})
-    public boolean save(User user, List<Integer> roleIds) {
-        if (!save(user)) {
-            throw new CustomException("用户创建失败！");
-        }
-        AtomicInteger count = new AtomicInteger(0);
-        roleIds.forEach(roleId -> {
-            if (!roleMapper.isExistsByRoleId(roleId)) {
-                throw new CustomException("角色不存在！");
-            }
-            count.addAndGet(userRoleMapper.insert(new UserRole().setUserId(user.getUserId())
-                    .setRoleId(roleId).setUserRoleCreatTimeStamp(new Date())
-                    .setUserRoleIsDelete(false)));
-        });
-        if (count.get() < roleIds.size()) {
-            throw new CustomException("用户角色分配失败");
-        }
-        return true;
-    }
 
     @Override
     public User loadUserByUsername(String userName) {
@@ -104,7 +75,7 @@ class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserServ
             CustomException.class})
     public boolean save(User user) {
         if (userMapper.isExistsByUserSecurityName(user.getUserSecurityName())) {
-            throw new CustomException("该用户已存在！");
+            throw new CustomException("该用户已存在");
         }
         String formerlyPassWord = user.getUserPassWord();
         String encryptPassWord = PASSWORDENCODER.encode(formerlyPassWord);

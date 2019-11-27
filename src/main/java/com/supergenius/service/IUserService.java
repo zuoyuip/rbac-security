@@ -20,14 +20,6 @@ import java.util.Set;
  */
 public interface IUserService extends IService<User> {
 
-    /**
-     * 创建一个用户并给予角色
-     * @param entity -
-     * @param roleIds -
-     * @return - boolean
-     */
-    boolean save(User entity, List<Integer> roleIds);
-
 
     /**
      * 根据用户名称查询该用户

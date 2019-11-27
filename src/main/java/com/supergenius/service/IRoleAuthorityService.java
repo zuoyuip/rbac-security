@@ -3,6 +3,7 @@ package com.supergenius.service;
 import com.supergenius.model.RoleAuthority;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,5 +22,5 @@ public interface IRoleAuthorityService extends IService<RoleAuthority> {
      * @param authorityIds -
      * @return boolean
      */
-    boolean updateAuthorities(Integer roleId, Set<Integer> authorityIds);
+    boolean updateAuthorities(Integer roleId, List<Integer> authorityIds);
 }
