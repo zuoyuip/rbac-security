@@ -20,25 +20,6 @@
         <result column="USER_EMAIL" property="userEmail"/>
     </resultMap>
 
-    <!-- 权限查询映射结果 -->
-    <resultMap id="AuthoritiesResultMap" type="com.supergenius.model.User">
-        <id column="USER_ID" property="userId"/>
-        <result column="USER_SECURITY_NAME" property="userSecurityName"/>
-        <result column="USER_PASS_WORD" property="userPassWord"/>
-        <result column="USER_IS_ENABLED" property="userIsEnabled"/>
-        <result column="USER_IS_ACCOUNT_NON_EXPIRED" property="userIsAccountNonExpired"/>
-        <result column="USER_IS_CREDENTIALS_NON_EXPIRED" property="userIsCredentialsNonExpired"/>
-        <result column="USER_IS_ACCOUNT_NON_LOCKED" property="userIsAccountNonLocked"/>
-        <result column="USER_CREAT_TIME_STAMP" property="userCreatTimeStamp"/>
-        <result column="USER_UPDATE_TIME_STAMP" property="userUpdateTimeStamp"/>
-        <result column="USER_IS_DELETE" property="userIsDelete"/>
-        <result column="USER_NAME" property="userName"/>
-        <result column="USER_NUMBER" property="userNumber"/>
-        <result column="USER_PHONE" property="userPhone"/>
-        <result column="USER_EMAIL" property="userEmail"/>
-        <result column="AUTHORITY_NAMES" property="authorities"/>
-    </resultMap>
-
     <resultMap id="ContentStructureResultMap" type="com.supergenius.model.vo.ContentStructure">
         <result column="AUTHORITY_CONTENT" property="contentName"/>
         <result column="AUTHORITY_MENU" property="menuName"/>
@@ -55,39 +36,26 @@
                           ), 0)
     </select>
 
-    <select id="loadUserByUsername" resultMap="AuthoritiesResultMap">
-        SELECT su.USER_ID                          AS USER_ID,
-               su.USER_SECURITY_NAME               AS USER_SECURITY_NAME,
-               su.USER_PASS_WORD                   AS USER_PASS_WORD,
-               su.USER_IS_ENABLED                  AS USER_IS_ENABLED,
-               su.USER_IS_ACCOUNT_NON_EXPIRED      AS USER_IS_ACCOUNT_NON_EXPIRED,
-               su.USER_IS_CREDENTIALS_NON_EXPIRED  AS USER_IS_CREDENTIALS_NON_EXPIRED,
-               su.USER_IS_ACCOUNT_NON_LOCKED       AS USER_IS_ACCOUNT_NON_LOCKED,
-               su.USER_CREAT_TIME_STAMP            AS USER_CREAT_TIME_STAMP,
-               su.USER_UPDATE_TIME_STAMP           AS USER_UPDATE_TIME_STAMP,
-               su.USER_IS_DELETE                   AS USER_IS_DELETE,
-               su.USER_NAME                        AS USER_NAME,
-               su.USER_NUMBER                      AS USER_NUMBER,
-               su.USER_PHONE                       AS USER_PHONE,
-               su.USER_EMAIL                       AS USER_EMAIL,
-               GROUP_CONCAT(sa.AUTHORITY_NAME, '') AS AUTHORITY_NAMES
-        FROM security.security_user su,
-             security.security_user_role sur,
-             security.security_role sr,
-             security.security_role_authority sra,
-             security.security_authority sa
-        WHERE sa.AUTHORITY_ID = sra.AUTHORITY_ID
-          AND sa.AUTHORITY_IS_DELETE = 0
-          AND sra.ROLE_ID = sr.ROLE_ID
-          AND sra.ROLE_AUTHORITY_IS_DELETE = 0
-          AND sr.ROLE_ID = sur.ROLE_ID
-          AND sr.ROLE_IS_DELETE = 0
-          AND sur.USER_ID = su.USER_ID
-          AND sur.USER_ROLE_IS_DELETE = 0
-          AND su.USER_IS_DELETE = 0
-          AND su.USER_SECURITY_NAME = #{userName}
-        GROUP BY su.USER_ID
+    <select id="loadUserByUsername" resultMap="BaseResultMap">
+        SELECT USER_ID,
+               USER_SECURITY_NAME,
+               USER_PASS_WORD,
+               USER_IS_ENABLED,
+               USER_IS_ACCOUNT_NON_EXPIRED,
+               USER_IS_CREDENTIALS_NON_EXPIRED,
+               USER_IS_ACCOUNT_NON_LOCKED,
+               USER_CREAT_TIME_STAMP,
+               USER_UPDATE_TIME_STAMP,
+               USER_IS_DELETE,
+               USER_NAME,
+               USER_NUMBER,
+               USER_PHONE,
+               USER_EMAIL
+        FROM security.security_user
+        WHERE USER_IS_DELETE = 0
+          AND USER_SECURITY_NAME = #{userName}
     </select>
+
     <select id="selectAuthoritiesById" resultMap="com.supergenius.mapper.AuthorityMapper.BaseResultMap">
         SELECT sa.AUTHORITY_ID                AS AUTHORITY_ID,
                sa.AUTHORITY_NAME              AS AUTHORITY_NAME,

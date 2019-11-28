@@ -7,8 +7,8 @@ import com.supergenius.model.Authority;
 import com.supergenius.model.Role;
 import com.supergenius.model.User;
 import com.supergenius.model.UserRole;
-import com.supergenius.model.vo.ContentVO;
 import com.supergenius.model.vo.ContentStructure;
+import com.supergenius.model.vo.ContentVO;
 import com.supergenius.model.vo.MenuVO;
 import com.supergenius.service.IUserRoleService;
 import com.supergenius.service.IUserService;
@@ -63,13 +63,8 @@ class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserServ
         return userMapper.selectRolesById(userId);
     }
 
-    @Override
-    public List<ContentVO> getContentsById(Serializable userId) {
-        List<ContentStructure> contentStructures = userMapper.getContentStructuresByUserId(userId);
-//        分组
-        Map<String, List<ContentStructure>> contentGroup = contentStructures.stream()
-                .collect(Collectors.groupingBy(ContentStructure::getContentName));
-//        根据分组再次组装对象
+    private List<ContentVO> contentBuilder(Map<String, List<ContentStructure>> contentGroup) {
+        //        根据分组组装对象
         return contentGroup.keySet().parallelStream().map(key -> {
             ContentVO contentVO = new ContentVO(key);
             List<MenuVO> menuList = new ArrayList<>(contentGroup.get(key).size());
@@ -78,6 +73,24 @@ class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserServ
                     .collect(Collectors.toList()));
             return contentVO.setMenuList(menuList);
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ContentVO> getContentsById(Serializable userId) {
+        List<ContentStructure> contentStructures = userMapper.getContentStructuresByUserId(userId);
+//        分组
+        Map<String, List<ContentStructure>> contentGroup = contentStructures.stream()
+                .collect(Collectors.groupingBy(ContentStructure::getContentName));
+        return contentBuilder(contentGroup);
+    }
+
+    @Override
+    public List<ContentVO> getContentsByUser(User user) {
+        List<Authority> authorities = user.getAuthorityBeans();
+        Map<String, List<ContentStructure>> contentGroup = authorities.stream().map(authority ->
+                new ContentStructure(authority.getAuthorityName(), authority.getAuthorityMenu(),
+                        authority.getAuthorityMenuUrl())).collect(Collectors.groupingBy(ContentStructure::getContentName));
+        return contentBuilder(contentGroup);
     }
 
     @Override

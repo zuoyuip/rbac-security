@@ -30,7 +30,7 @@ public class ValidationController {
     }
 
     @GetMapping("system")
-    @PreAuthorize("hasRole('SYSTEM_INDEX')")
+    @PreAuthorize("hasAuthority('SYSTEM_INDEX')")
     @ApiOperation(value = "获取所有权限列表（仅admin可调用）", response = Authority.class, ignoreJsonView = true)
     public ResponseEntity<List<Authority>> seeTimeStamp() {
         List<Authority> authorities = iUserService.selectAuthoritiesById(2);
@@ -38,21 +38,21 @@ public class ValidationController {
     }
 
     @GetMapping("investor")
-    @PreAuthorize("hasRole('INVESTOR_CONSUMER')")
+    @PreAuthorize("hasAuthority('INVESTOR_CONSUMER')")
     @ApiOperation(value = "验证权限（仅user、admin可调用）", response = String.class, ignoreJsonView = true)
     public ResponseEntity<String> seeInvestorConsumer() {
         return ResponseEntity.ok("您是user或admin用户");
     }
 
     @GetMapping("order")
-    @PreAuthorize("hasRole('MEMBERS_ORDER')")
+    @PreAuthorize("hasAuthority('MEMBERS_ORDER')")
     @ApiOperation(value = "验证权限（仅opera、admin可调用）", response = String.class, ignoreJsonView = true)
     public ResponseEntity<String> seeMembersOrder() {
         return ResponseEntity.ok("您是opera或admin用户");
     }
 
     @GetMapping("many")
-    @PreAuthorize("hasAnyRole('INVESTOR_CONSUMER', 'MEMBERS_ORDER')")
+    @PreAuthorize("hasAnyAuthority('INVESTOR_CONSUMER', 'MEMBERS_ORDER')")
     @ApiOperation(value = "验证权限（opera、user、admin可调用）", response = String.class, ignoreJsonView = true)
     public ResponseEntity<String> seeManyRole() {
         return ResponseEntity.ok("您是opera或user或admin用户");

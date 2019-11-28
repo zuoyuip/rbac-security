@@ -52,6 +52,13 @@ public interface IUserService extends IService<User> {
     List<ContentVO> getContentsById(Serializable userId);
 
     /**
+     * 根据用户查询对应的目录结构
+     * @param user -
+     * @return List<Content>
+     */
+    List<ContentVO> getContentsByUser(User user);
+
+    /**
      * 创建用户同时赋予其角色
      * @param user - 用户
      * @param roleIds - 角色Id

@@ -36,7 +36,7 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         User user = (User) authentication.getPrincipal();
-        List<ContentVO> contentList = iUserService.getContentsById(user.getUserId());
+        List<ContentVO> contentList = iUserService.getContentsByUser(user);
         response.setContentType("application/json;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         ServletOutputStream servletOutputStream = response.getOutputStream();

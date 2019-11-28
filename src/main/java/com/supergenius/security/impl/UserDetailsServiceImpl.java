@@ -1,12 +1,15 @@
 package com.supergenius.security.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.supergenius.model.Authority;
 import com.supergenius.model.User;
 import com.supergenius.service.IUserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author : zuoyu
@@ -25,6 +28,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        return iUserService.loadUserByUsername(userName);
+        User user = iUserService.loadUserByUsername(userName);
+        if (user == null){
+            throw new UsernameNotFoundException("用户名或密码错误");
+        }
+        List<Authority> authorities = iUserService.selectAuthoritiesById(user.getUserId());
+        return user.setAuthorityBeans(authorities);
     }
 }

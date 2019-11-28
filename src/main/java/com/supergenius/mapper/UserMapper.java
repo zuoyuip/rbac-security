@@ -36,9 +36,9 @@ public interface UserMapper extends BaseMapper<User> {
     User loadUserByUsername(String userName);
 
     /**
-     * 根据Id查询对应权限
+     * 根据Id查询对应权限对象
      * @param userId -
-     * @return List<String>
+     * @return List<Authority>
      */
     List<Authority> selectAuthoritiesById(Serializable userId);
 

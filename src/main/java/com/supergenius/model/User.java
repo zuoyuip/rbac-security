@@ -15,7 +15,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -92,7 +95,7 @@ public class User extends Model<User> implements UserDetails {
     private String userEmail;
 
     @TableField(exist = false)
-    private String authorities;
+    private List<Authority> authorityBeans;
 
 
     public User(String userSecurityName, String userPassWord, String userName, String userNumber, String userPhone, String userEmail) {
@@ -111,12 +114,11 @@ public class User extends Model<User> implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.authorities == null || this.authorities.isEmpty()){
+        if (this.authorityBeans == null || this.authorityBeans.isEmpty()) {
             return new HashSet<>(0);
         }
-        final String spacer = ",";
-        return Arrays.stream(this.authorities.split(spacer))
-                .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority))
+        return authorityBeans.stream().map(authority ->
+                new SimpleGrantedAuthority(authority.getAuthorityName()))
                 .collect(Collectors.toCollection(HashSet::new));
     }
 
