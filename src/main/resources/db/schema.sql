@@ -1,4 +1,6 @@
-create table security_authority
+create schema if not exists security collate utf8_general_ci;
+
+create table if not exists security_authority
 (
     AUTHORITY_ID                int auto_increment comment '主键',
     AUTHORITY_NAME              varchar(32)                         not null comment '权限名称',
@@ -22,7 +24,7 @@ create table security_authority
 alter table security_authority
     add primary key (AUTHORITY_ID);
 
-create table security_role
+create table if not exists security_role
 (
     ROLE_ID                int auto_increment comment '角色ID',
     ROLE_NAME              varchar(32)                         not null comment '角色名称',
@@ -39,7 +41,7 @@ create table security_role
 alter table security_role
     add primary key (ROLE_ID);
 
-create table security_role_authority
+create table if not exists security_role_authority
 (
     ROLE_AUTHORITY_ID                int auto_increment comment 'ID',
     ROLE_ID                          int                                 not null comment '角色ID',
@@ -55,11 +57,11 @@ create table security_role_authority
 alter table security_role_authority
     add primary key (ROLE_AUTHORITY_ID);
 
-create table security_user
+create table if not exists security_user
 (
     USER_ID                         int auto_increment comment '安全用户ID',
     USER_SECURITY_NAME              varchar(32)                         not null comment '安全账号',
-    USER_PASS_WORD                  varchar(128)                         not null comment '用户密码',
+    USER_PASS_WORD                  varchar(128)                        not null comment '用户密码',
     USER_IS_ENABLED                 tinyint(1)                          not null comment '账号是否启用',
     USER_IS_ACCOUNT_NON_EXPIRED     tinyint(1)                          not null comment '账号是否未过期',
     USER_IS_CREDENTIALS_NON_EXPIRED tinyint(1)                          not null comment '凭证是否未过期',
@@ -87,7 +89,7 @@ create table security_user
 alter table security_user
     add primary key (USER_ID);
 
-create table security_user_role
+create table if not exists security_user_role
 (
     USER_ROLE_ID                int auto_increment comment 'ID',
     USER_ID                     int                                 not null comment '用户ID',

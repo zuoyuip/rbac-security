@@ -2,7 +2,7 @@ package com.supergenius.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.supergenius.model.User;
-import com.supergenius.model.vo.Content;
+import com.supergenius.model.vo.ContentVO;
 import com.supergenius.service.IUserService;
 import com.supergenius.utils.Result;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -36,11 +36,11 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         User user = (User) authentication.getPrincipal();
-        List<Content> contents = iUserService.getContentsById(user.getUserId());
+        List<ContentVO> contentList = iUserService.getContentsById(user.getUserId());
         response.setContentType("application/json;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         ServletOutputStream servletOutputStream = response.getOutputStream();
-        Result result = Result.detail("登陆成功", contents);
+        Result result = Result.detail("登陆成功", contentList);
         byte[] bytes = new ObjectMapper().writeValueAsBytes(result);
         servletOutputStream.write(bytes);
         servletOutputStream.flush();

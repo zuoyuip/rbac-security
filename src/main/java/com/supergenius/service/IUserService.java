@@ -4,11 +4,10 @@ import com.supergenius.model.Authority;
 import com.supergenius.model.Role;
 import com.supergenius.model.User;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.supergenius.model.vo.Content;
+import com.supergenius.model.vo.ContentVO;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 /**
  * <p>
@@ -50,7 +49,7 @@ public interface IUserService extends IService<User> {
      * @param userId -
      * @return List<Content>
      */
-    List<Content> getContentsById(Serializable userId);
+    List<ContentVO> getContentsById(Serializable userId);
 
     /**
      * 创建用户同时赋予其角色

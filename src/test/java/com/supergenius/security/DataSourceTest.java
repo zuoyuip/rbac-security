@@ -4,7 +4,7 @@ import com.supergenius.mapper.AuthorityMapper;
 import com.supergenius.model.Authority;
 import com.supergenius.model.Role;
 import com.supergenius.model.User;
-import com.supergenius.model.vo.Content;
+import com.supergenius.model.vo.ContentVO;
 import com.supergenius.service.IAuthorityService;
 import com.supergenius.service.IRoleAuthorityService;
 import com.supergenius.service.IRoleService;
@@ -161,8 +161,8 @@ class DataSourceTest extends ManagementSecurityApplicationTests {
 
     @Test
     void userMenus() {
-        List<Content> contents = iUserService.getContentsById(2);
-        contents.forEach(System.out::println);
+        List<ContentVO> contentVOS = iUserService.getContentsById(2);
+        contentVOS.forEach(System.out::println);
     }
 
     @Test

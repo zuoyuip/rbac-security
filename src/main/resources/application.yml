@@ -9,12 +9,24 @@ spring:
   application:
     name: management-security
   datasource:
+    name: security
+    url: jdbc:mysql://localhost:3306/security?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: 123456
+    schema: classpath:db/schema.sql
+    data:
+      - classpath:db/security_security_authority.sql
+      - classpath:db/security_security_role.sql
+      - classpath:db/security_security_user.sql
+      - classpath:db/security_security_role_authority.sql
+      - classpath:db/security_security_user_role.sql
+    initialization-mode: always
+    separator: ;
     druid:
-      name: security
-      url: jdbc:mysql://localhost:3306/security?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
-      driver-class-name: com.mysql.jdbc.Driver
-      username: root
-      password: 123456
+      filter:
+        wall:
+          enabled: false
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.supergenius.model

@@ -8,24 +8,29 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 /**
  * @author : zuoyu
  * @project : management-security
- * @description : 菜单
- * @date : 2019-11-26 14:11
+ * @description : 目录
+ * @date : 2019-11-26 14:15
  **/
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value = "Menu对象", description = "菜单")
-public class Menu {
+@ApiModel(value="Content对象", description="目录")
+public class ContentVO {
 
-    @ApiModelProperty(value = "菜单名称")
+    @ApiModelProperty(value = "目录名称")
     private String name;
 
-    @ApiModelProperty(value = "URL路径")
-    private String url;
+    @ApiModelProperty(value = "菜单列表")
+    private List<MenuVO> menuList;
 
+    public ContentVO(String name) {
+        this.name = name;
+    }
 }

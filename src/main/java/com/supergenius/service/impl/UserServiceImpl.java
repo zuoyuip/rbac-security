@@ -7,9 +7,9 @@ import com.supergenius.model.Authority;
 import com.supergenius.model.Role;
 import com.supergenius.model.User;
 import com.supergenius.model.UserRole;
-import com.supergenius.model.vo.Content;
+import com.supergenius.model.vo.ContentVO;
 import com.supergenius.model.vo.ContentStructure;
-import com.supergenius.model.vo.Menu;
+import com.supergenius.model.vo.MenuVO;
 import com.supergenius.service.IUserRoleService;
 import com.supergenius.service.IUserService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -64,19 +64,19 @@ class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserServ
     }
 
     @Override
-    public List<Content> getContentsById(Serializable userId) {
+    public List<ContentVO> getContentsById(Serializable userId) {
         List<ContentStructure> contentStructures = userMapper.getContentStructuresByUserId(userId);
 //        分组
         Map<String, List<ContentStructure>> contentGroup = contentStructures.stream()
                 .collect(Collectors.groupingBy(ContentStructure::getContentName));
 //        根据分组再次组装对象
         return contentGroup.keySet().parallelStream().map(key -> {
-            Content content = new Content(key);
-            List<Menu> menus = new ArrayList<>(contentGroup.get(key).size());
-            menus.addAll(contentGroup.get(key).stream().map(contentStructure ->
-                    new Menu(contentStructure.getMenuName(), contentStructure.getUrl()))
+            ContentVO contentVO = new ContentVO(key);
+            List<MenuVO> menuList = new ArrayList<>(contentGroup.get(key).size());
+            menuList.addAll(contentGroup.get(key).stream().map(contentStructure ->
+                    new MenuVO(contentStructure.getMenuName(), contentStructure.getUrl()))
                     .collect(Collectors.toList()));
-            return content.setMenus(menus);
+            return contentVO.setMenuList(menuList);
         }).collect(Collectors.toList());
     }
 
