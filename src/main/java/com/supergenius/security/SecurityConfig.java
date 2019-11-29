@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -45,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthenticationFailureHandler authenticationFailureHandler;
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
 
-    public SecurityConfig(@Qualifier("userDetailsServiceImpl")UserDetailsService userDetailsService, AuthenticationFailureHandler authenticationFailureHandler, AuthenticationSuccessHandler authenticationSuccessHandler) {
+    public SecurityConfig(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService, AuthenticationFailureHandler authenticationFailureHandler, AuthenticationSuccessHandler authenticationSuccessHandler) {
         this.userDetailsService = userDetailsService;
         this.authenticationFailureHandler = authenticationFailureHandler;
         this.authenticationSuccessHandler = authenticationSuccessHandler;
@@ -61,30 +63,38 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .cors()
-                .and()
-                .csrf().disable()
-                .requestCache().disable()
-                .authorizeRequests()
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers().authenticated()
-                .anyRequest().permitAll()
-                .and()
-                .formLogin().loginProcessingUrl(SecurityConstants.USER_LOGIN_URL)
-                .usernameParameter(SecurityConstants.USER_LOGIN_USERNAME)
-                .passwordParameter(SecurityConstants.USER_LOGIN_PASSWORD)
-                .permitAll()
-                .successHandler(authenticationSuccessHandler)
-                .failureHandler(authenticationFailureHandler)
-                .and()
-                .rememberMe()
-                .disable()
-                .logout().logoutUrl(SecurityConstants.USER_LOGOUT_URL)
-                .logoutSuccessHandler(new LogoutSuccessHandlerImpl()).clearAuthentication(true).permitAll()
-                .and()
-                .exceptionHandling()
-                .accessDeniedHandler(new AccessDeniedHandlerImpl())
-                .authenticationEntryPoint(new AuthenticationEntryPointImpl());
+//                放行资源跨域
+                .cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
+//                关闭跨站请求伪造保护
+                .csrf(AbstractHttpConfigurer::disable)
+//                关闭访问请求的缓存
+                .requestCache(RequestCacheConfigurer::disable)
+//                默认任何资源可匿名访问
+                .authorizeRequests(expressionInterceptUrlRegistry ->
+                        expressionInterceptUrlRegistry.requestMatchers(CorsUtils::isPreFlightRequest)
+                                .permitAll()
+                                .antMatchers().authenticated()
+                                .anyRequest().permitAll())
+//                登陆管理
+                .formLogin(formLoginConfigurer ->
+                        formLoginConfigurer.loginProcessingUrl(SecurityConstants.USER_LOGIN_URL)
+                                .usernameParameter(SecurityConstants.USER_LOGIN_USERNAME)
+                                .passwordParameter(SecurityConstants.USER_LOGIN_PASSWORD)
+                                .permitAll()
+                                .successHandler(authenticationSuccessHandler)
+                                .failureHandler(authenticationFailureHandler))
+//                “记住我”配置
+                .rememberMe(AbstractHttpConfigurer::disable)
+//                注销配置
+                .logout(logoutConfigurer ->
+                        logoutConfigurer.logoutUrl(SecurityConstants.USER_LOGOUT_URL)
+                                .logoutSuccessHandler(new LogoutSuccessHandlerImpl())
+                                .clearAuthentication(true)
+                                .permitAll())
+//                各种情况拦截器配置
+                .exceptionHandling(exceptionHandlingConfigurer ->
+                        exceptionHandlingConfigurer.accessDeniedHandler(new AccessDeniedHandlerImpl())
+                                .authenticationEntryPoint(new AuthenticationEntryPointImpl()));
     }
 
     @Bean("passwordEncoder")
@@ -93,6 +103,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
+    /**
+     * 配置跨域
+     */
+    @Bean("corsConfigurationSource")
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.addAllowedHeader(CorsConfiguration.ALL);
+        corsConfiguration.addAllowedMethod(CorsConfiguration.ALL);
+        corsConfiguration.addAllowedOrigin(CorsConfiguration.ALL);
+        corsConfiguration.setMaxAge(3600L);
+        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+        return urlBasedCorsConfigurationSource;
+    }
 
     /**
      * 用来解决认证过的用户访问无权限资源时的异常.
@@ -141,21 +166,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             responseWriter.flush();
             responseWriter.close();
         }
-    }
-
-    /**
-     * 配置跨域
-     */
-    @Bean("corsConfigurationSource")
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.addAllowedHeader(CorsConfiguration.ALL);
-        corsConfiguration.addAllowedMethod(CorsConfiguration.ALL);
-        corsConfiguration.addAllowedOrigin(CorsConfiguration.ALL);
-        corsConfiguration.setMaxAge(3600L);
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
-        return urlBasedCorsConfigurationSource;
     }
 }

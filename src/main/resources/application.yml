@@ -12,16 +12,17 @@ spring:
     name: security
     url: jdbc:mysql://localhost:3306/security?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull
     driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
     username: root
     password: 123456
     schema: classpath:db/schema.sql
     data:
-      - classpath:db/security_security_authority.sql
-      - classpath:db/security_security_role.sql
-      - classpath:db/security_security_user.sql
-      - classpath:db/security_security_role_authority.sql
-      - classpath:db/security_security_user_role.sql
-    initialization-mode: never
+      - classpath:db/data/security_security_authority.sql
+      - classpath:db/data/security_security_role.sql
+      - classpath:db/data/security_security_user.sql
+      - classpath:db/data/security_security_role_authority.sql
+      - classpath:db/data/security_security_user_role.sql
+    initialization-mode: always
     separator: ;
     druid:
       filter:

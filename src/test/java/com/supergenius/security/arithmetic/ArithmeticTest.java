@@ -1,4 +1,4 @@
-package com.supergenius.security;
+package com.supergenius.security.arithmetic;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;

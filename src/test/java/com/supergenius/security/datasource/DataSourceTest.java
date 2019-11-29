@@ -1,10 +1,11 @@
-package com.supergenius.security;
+package com.supergenius.security.datasource;
 
 import com.supergenius.mapper.AuthorityMapper;
 import com.supergenius.model.Authority;
 import com.supergenius.model.Role;
 import com.supergenius.model.User;
 import com.supergenius.model.vo.ContentVO;
+import com.supergenius.security.ManagementSecurityApplicationTests;
 import com.supergenius.service.IAuthorityService;
 import com.supergenius.service.IRoleAuthorityService;
 import com.supergenius.service.IRoleService;

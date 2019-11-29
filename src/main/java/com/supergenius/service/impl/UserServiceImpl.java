@@ -88,7 +88,7 @@ class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserServ
     public List<ContentVO> getContentsByUser(User user) {
         List<Authority> authorities = user.getAuthorityBeans();
         Map<String, List<ContentStructure>> contentGroup = authorities.stream().map(authority ->
-                new ContentStructure(authority.getAuthorityName(), authority.getAuthorityMenu(),
+                new ContentStructure(authority.getAuthorityContent(), authority.getAuthorityMenu(),
                         authority.getAuthorityMenuUrl())).collect(Collectors.groupingBy(ContentStructure::getContentName));
         return contentBuilder(contentGroup);
     }
