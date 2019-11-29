@@ -22,7 +22,7 @@ spring:
       - classpath:db/data/security_security_user.sql
       - classpath:db/data/security_security_role_authority.sql
       - classpath:db/data/security_security_user_role.sql
-    initialization-mode: always
+    initialization-mode: never
     separator: ;
     druid:
       filter:
