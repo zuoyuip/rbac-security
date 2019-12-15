@@ -1,5 +1,5 @@
 # rbac-security
-[GitHub地址](https://github.com/zuoyuip/rbac-security "GitHub地址")
+[博客地址](https://my.oschina.net/zuoyuip/blog/3143273)
 
 > ### 这是一个基于简单的RBAC模型，结合Spring Security开发的权限管理模块。
 
