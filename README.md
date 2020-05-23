@@ -13,7 +13,7 @@
 
 **该系统的RBAC模型——**
 
-![Image of RBAC](https://github.com/zuoyuip/rbac-security/blob/master/UML/RBAC_model.png?raw=true)
+![Image of RBAC](https://www.zuoyu.top/upload/2020/04/RBAC_model-863d956a50d743d985dfa82793d1fbf0-7bd9ce7e382148c6bb74ac90c0d4c623.png)
 
 ---------
 
